@@ -27,6 +27,24 @@ class TestCalypsoArginfo(unittest.TestCase):
         normalized = arginfo.normalize_value(data)
         arginfo.check_value(normalized, strict=True)
 
+    def test_job_task_min_survives_strict_normalization(self):
+        """FP selection consumes task_min from the selected cur_job.json."""
+        path = Path(__file__).parent.parent / "examples/run/dp-calypso-vasp/param.json"
+        example = json.loads(path.read_text())
+        job = example["model_devi_jobs"][0]
+        job["task_min"] = 3
+        data = {
+            "model_devi_engine": "calypso",
+            "model_devi_jobs": [job],
+            "model_devi_skip": 0,
+            "model_devi_f_trust_lo": 0.05,
+            "model_devi_f_trust_hi": 0.15,
+        }
+        arginfo = Argument("model_devi", dict, sub_variants=model_devi_args())
+        normalized = arginfo.normalize_value(data)
+        arginfo.check_value(normalized, strict=True)
+        self.assertEqual(normalized["model_devi_jobs"][0]["task_min"], 3)
+
     def test_checked_in_example_is_schema_compatible(self):
         """The maintained example's CALYPSO section passes strict validation."""
         param_file = (
