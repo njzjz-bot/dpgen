@@ -700,6 +700,13 @@ def model_devi_calypso_args() -> list[Argument]:
             repeat=True,
             doc=doc_model_devi_jobs,
             sub_fields=[
+                Argument(
+                    "task_min",
+                    int,
+                    optional=True,
+                    doc="Minimum candidate count for this job before FP tasks are created. "
+                    "No per-job minimum is applied when omitted.",
+                ),
                 Argument("times", list[int], optional=False, doc=doc_times),
                 Argument("NameOfAtoms", list[str], optional=False, doc=doc_nameofatoms),
                 Argument(
